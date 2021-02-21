@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-us">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,6 +9,38 @@
     <title>Javascript Quiz!</title>
 </head>
 <body>
+    <header>
+        <section class="header-title">
+            <h1>Javascript Quiz</h1>
+        </section>
+        <section class="viewscore-section">
+            <button type="button" class="high-scores">High Scores</button>
+        </section>
+        <section class="timer-section">
+            <p>Time left: <span class="time-left"></span></p>
+        </section>
+    </header>
+    <main>
+        <section class="quiz-question">
+            <h2>Test your knownledge of Javascript with this multiple choice quiz!</h2>
+        </section>
+        <section class="quiz-choice">
+            <p>There will be a total of 10 questions, and you will have a time limit of 100 seconds to answer them all.</p>
+        </section>
+        <section class="quiz-choice">
+            <p>Every time a question is incorrectly answered, 5 seconds will be subtracted from the timer.</p>
+        </section>
+        <section class="quiz-choice">
+            <p>When you are finished with the quiz, your score will be equal to the time left.</p>
+        </section>
+        <section class="quiz-choice">
+            <p>Answer questions correctly, and aim for a high score!</p>
+        </section>
+        <button type="button" class="start">Start Quiz!</button>
+    </main>
+    <footer>
+        <h3>Made by Neil Chen, 2021.</h2>
+    </footer>
     <script src="./assets/script.js"></script>
 </body>
 </html>
