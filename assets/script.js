@@ -65,19 +65,39 @@ var quizChoiceEl = document.querySelectorAll(".quiz-choice");
 var startButtonEl = document.querySelector(".start-button");
 var answerValidityEl = document.querySelector(".answer-validity");
 
-// Function for timer
-function startTimer(){
-    timeRemaining = 50;
-    timeInterval = setInterval(() => {
-        if (timeRemaining !== 0){
-            timeRemaining--;
-            timerEl.textContent = timeRemaining;
-        } else {
-            clearInterval(timeInterval);
-            timerEl.textContent = timeRemaining;
-            quizEndCheck();
-        }
-    }, 1000);
+// Function to initialize the quiz
+function quizInit(){
+    quizProgress = 0;
+    // Function for timer
+    function startTimer(){
+        timeRemaining = 50;
+        timeInterval = setInterval(() => {
+            if (timeRemaining !== 0){
+                timeRemaining--;
+                timerEl.textContent = timeRemaining;
+            } else {
+                clearInterval(timeInterval);
+                timerEl.textContent = timeRemaining;
+                quizEndCheck();
+            }
+        }, 1000);
+    }
+    startTimer();
+    removeButtons();
+    clearQuestionAndChoice();
+    buildQuestionAndChoice(quizProgress);
+}
+
+// Function to check quiz end procedures
+function quizEndCheck(){
+    if (timeRemaining === 0){
+        finalScore = timeRemaining;
+        buildEndScreen();
+    } else if (quizProgress === jsQuestionsAnswers.length){
+        clearInterval(timeInterval);
+        finalScore = timeRemaining;
+        buildEndScreen();
+    }
 }
 
 // Function to remove the start button, question and answer choices
@@ -123,70 +143,45 @@ function buildButton(cla, txt, func){
     cla.addEventListener("click", func);
 }
 
-// Function to initialize the quiz
-function quizInit(){
-    quizProgress = 0;
-    startTimer();
-    removeButtons();
-    clearQuestionAndChoice();
-    buildQuestionAndChoice(quizProgress);
-}
-
 // Function to select an answer that the user clicked
 function selectAnswer(event){
     event.stopPropagation();
     event.preventDefault();
     answerChoice = event.target.getAttribute("data-value");
+    // Function for validating answer
+    function answerValidation(choice){
+        var questionState = quizQuestionEl.firstElementChild.getAttribute("data-state");
+        var chosenAnswer = quizChoiceEl[choice].firstElementChild.getAttribute("data-state");
+        // Function to compare question to answer
+        function compareAnswer(q, a){
+            if (q === a){
+                flashMessage("Correct!");
+            } else {
+                flashMessage("Incorrect!");
+                timeRemaining -= 5; // Subtract time from the clock if answer was wrong
+            }
+        }
+        // Function to quickly display a message and remove it
+        function flashMessage(message){
+            var flashTimer = 4;
+            var flashInterval = setInterval(() => {
+                if (flashTimer !== 0){
+                    flashTimer--;
+                    answerValidityEl.textContent = message;
+                } else {
+                    clearInterval(flashInterval);
+                    answerValidityEl.textContent = " ";
+                }
+            }, 250);
+        }
+        compareAnswer(questionState, chosenAnswer);
+    }
     answerValidation(answerChoice);
     quizProgress++;
     quizEndCheck();
     // If the quiz is not over, build the next question
     if (quizProgress !== jsQuestionsAnswers.length){
         buildQuestionAndChoice(quizProgress);
-    }
-}
-
-// Function for validating answer
-function answerValidation(choice){
-    var questionState = quizQuestionEl.firstElementChild.getAttribute("data-state");
-    var chosenAnswer = quizChoiceEl[choice].firstElementChild.getAttribute("data-state");
-    compareAnswer(questionState, chosenAnswer);
-}
-
-// Function to compare question to answer
-function compareAnswer(q, a){
-    if (q === a){
-        flashMessage("Correct!");
-        // answerValidityEl.textContent = "Correct!";
-    } else {
-        flashMessage("Incorrect!");
-        timeRemaining -= 5; // Subtract time from the clock if answer was wrong
-    }
-}
-
-// Function to quickly display a message and remove it
-function flashMessage(message){
-    var flashTimer = 4;
-    var flashInterval = setInterval(() => {
-        if (flashTimer !== 0){
-            flashTimer--;
-            answerValidityEl.textContent = message;
-        } else {
-            clearInterval(flashInterval);
-            answerValidityEl.textContent = " ";
-        }
-    }, 250);
-}
-
-// Function to check quiz end procedures
-function quizEndCheck(){
-    if (timeRemaining === 0){
-        finalScore = timeRemaining;
-        buildEndScreen();
-    } else if (quizProgress === jsQuestionsAnswers.length){
-        clearInterval(timeInterval);
-        finalScore = timeRemaining;
-        buildEndScreen();
     }
 }
 
@@ -212,23 +207,22 @@ function buildEndScreen(){
             initials: initials.value
         }
         currentLeaderboard.push(newScore); // Pushes the newScore object created, into the current leaderboard
-        currentLeaderboard.sort(compare); // Sorts the array so that only the top 4 scores show later
+        // Function to compare objects in currentLeaderboard, so they can be fed through the .sort method for leaderboard organization
+        function compareHighScore(a, b){
+            var playerA = a.score;
+            var playerB = b.score;
+            var comparison = 0;
+            if (playerA > playerB){
+                comparison = 1;
+            } else if (playerA < playerB){
+                comparison = -1;
+            }
+            return comparison * -1;
+        }
+        currentLeaderboard.sort(compareHighScore); // Sorts the array so that only the top 4 scores show later
         localStorage.setItem("scoreArray", JSON.stringify(currentLeaderboard)); // Turns the currentLeaderboard back into a JSON string
         buildHighScores(); 
     }
-}
-
-// Function to compare objects in currentLeaderboard, so they can be fed through the .sort method for leaderboard organization
-function compare(a, b){
-    var playerA = a.score;
-    var playerB = b.score;
-    var comparison = 0;
-    if (playerA > playerB){
-        comparison = 1;
-    } else if (playerA < playerB){
-        comparison = -1;
-    }
-    return comparison * -1;
 }
 
 // Function to build HTML for high scores section
@@ -240,41 +234,38 @@ function buildHighScores(){
     quizQuestionEl.innerHTML = "<h2>Current Leaderboard</h2>";
     // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
     currentLeaderboard = JSON.parse(localStorage.getItem("scoreArray")) || [];
+    // Function for building leaderboard
+    function buildLeaderboard(){
+        if (currentLeaderboard.length < quizChoiceEl.length){
+            // For loop that populates the elements with the top 4 scores, if the currentLeaderboard is less than 4 records
+            for (var i = 0; i < currentLeaderboard.length; i++){
+                quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + " " + currentLeaderboard[i].score + "</p>";
+            }
+        } else if (currentLeaderboard.length >= quizChoiceEl.length){
+            // For loop that populates the elements with only the top 4 scores
+            for (var i = 0; i < quizChoiceEl.length; i++){
+                quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + " " + currentLeaderboard[i].score + "</p>";
+            }
+        }
+    }
     buildLeaderboard();
+    // Function for reinitializing the page
+    function pageReInit(){
+        // Remove extra buttons generated from the buildHighScores function
+        for (var i = 0; i <= startButtonEl.childElementCount; i++){
+            startButtonEl.firstElementChild.remove();
+        }
+        pageInit();
+    }
     // Create HTML button element for the main menu button
     buildButton("menu", "Main Menu!", pageReInit);
+    // Function for clearing the leaderboard
+    function clearScore(){
+        localStorage.clear();
+        buildHighScores();
+    }
     // Create HTML button element for the clear leaderboard button
     buildButton("clear", "Clear Leaderboard!", clearScore);
-}
-
-// Function for building leaderboard
-function buildLeaderboard(){
-    if (currentLeaderboard.length < quizChoiceEl.length){
-        // For loop that populates the elements with the top 4 scores, if the currentLeaderboard is less than 4 records
-        for (var i = 0; i < currentLeaderboard.length; i++){
-            quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + " " + currentLeaderboard[i].score + "</p>";
-        }
-    } else if (currentLeaderboard.length >= quizChoiceEl.length){
-         // For loop that populates the elements with only the top 4 scores
-         for (var i = 0; i < quizChoiceEl.length; i++){
-            quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + " " + currentLeaderboard[i].score + "</p>";
-        }
-    }
-}
-
-// Function for reinitializing the page
-function pageReInit(){
-    // Remove extra buttons generated from the buildHighScores function
-    for (var i = 0; i <= startButtonEl.childElementCount; i++){
-        startButtonEl.firstElementChild.remove();
-    }
-    pageInit();
-}
-
-// Function for clearing the leaderboard
-function clearScore(){
-    localStorage.clear();
-    buildHighScores();
 }
 
 // Function for page initialization
