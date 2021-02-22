@@ -7,15 +7,19 @@ body {
 header {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-evenly;
     flex-wrap: wrap;
 }
 
+.viewscore-section,
+.timer-section,
 .header-title {
-    flex: 1 1 100%;
+    flex: 1 1 33.33%;
+    padding: 3vh 10vh;
+    width: 35vh;
+    height: 10vh;
 }
 
-.viewscore-section,
-.timer-section {
-    flex: 1 1 50%;   
+.answer-validity {
+    align-content: center;
 }

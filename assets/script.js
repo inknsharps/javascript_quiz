@@ -135,11 +135,26 @@ function answerValidation(choice){
 // Function to compare question to answer
 function compareAnswer(q, a){
     if (q === a){
-        answerValidityEl.textContent = "Correct!";
+        flashMessage("Correct!");
+        // answerValidityEl.textContent = "Correct!";
     } else {
-        answerValidityEl.textContent = "Incorrect!";
+        flashMessage("Incorrect!");
         timeRemaining -= 5; // Subtract time from the clock if answer was wrong
     }
+}
+
+// Function to quickly display a message and remove it
+function flashMessage(message){
+    var flashTimer = 4;
+    var flashInterval = setInterval(() => {
+        if (flashTimer !== 0){
+            flashTimer--;
+            answerValidityEl.textContent = message;
+        } else {
+            clearInterval(flashInterval);
+            answerValidityEl.textContent = " ";
+        }
+    }, 250);
 }
 
 // Function to check quiz end procedures
@@ -258,9 +273,12 @@ function clearScore(){
 
 // Function for removing buttons from startButtonEl
 function removeButtons(){
-    // Remove generated buttons in the startButtonEl element
-    for (var i = 0; i <= startButtonEl.childElementCount; i++){
-        startButtonEl.firstElementChild.remove();
+    // If startButtonEl has something...
+    if (startButtonEl.firstElementChild !== null){
+        // ...Remove generated buttons in the startButtonEl element
+        for (var i = 0; i <= startButtonEl.childElementCount; i++){
+            startButtonEl.firstElementChild.remove();
+        }
     }
 }
 
