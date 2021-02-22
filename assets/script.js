@@ -79,7 +79,7 @@ function buildQuestionAndChoice(questionNum){
 function quizInit(){
     quizProgress = 0;
     startTimer();
-    startButtonEl.firstElementChild.remove(); // Remove start button
+    removeButtons();
     clearQuestionAndChoice();
     buildQuestionAndChoice(quizProgress);
 }
@@ -173,22 +173,16 @@ function compare(a, b){
     return comparison * -1;
 }
 
-// Function to build high scores section
+// Function to build HTML for high scores section
 function buildHighScores(){
     // Stops the timer in case high scores are accessed during a quiz
     clearInterval(timeInterval); 
-    // If statement to remove start button in case high scores are accessed from the main menu
-    if (startButtonEl.firstElementChild !== null){
-        startButtonEl.firstElementChild.remove();
-    }
+    removeButtons();
     clearQuestionAndChoice();
     quizQuestionEl.innerHTML = "<h2>Current Leaderboard</h2>";
     // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
     currentLeaderboard = JSON.parse(localStorage.getItem("scoreArray")) || [];
-    // For loop that populates the elements with the top 4 scores
-    for (var i = 0; i < quizChoiceEl.length; i++){
-        quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + currentLeaderboard[i].score + "</p>";
-    }
+    buildLeaderboard();
     // Create HTML element for the main menu button
     var mainMenuBtn = document.createElement("button");
     mainMenuBtn.setAttribute("class", "menu");
@@ -196,13 +190,51 @@ function buildHighScores(){
     mainMenuBtn.appendChild(mainMenuBtnText);
     startButtonEl.appendChild(mainMenuBtn);
     mainMenuBtn.addEventListener("click", pageReInit);
+    // Create HTML element for the clear leaderboard button
+    var clearScoreBtn = document.createElement("button");
+    clearScoreBtn.setAttribute("class", "clear");
+    var clearScoreBtnText = document.createTextNode("Clear Leaderboard!");
+    clearScoreBtn.appendChild(clearScoreBtnText);
+    startButtonEl.appendChild(clearScoreBtn);
+    clearScoreBtn.addEventListener("click", clearScore);
+}
+
+// Function for building leaderboard
+function buildLeaderboard(){
+    if (currentLeaderboard.length < quizChoiceEl.length){
+        // For loop that populates the elements with the top 4 scores, if the currentLeaderboard is less than 4 records
+        for (var i = 0; i < currentLeaderboard.length; i++){
+            quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + currentLeaderboard[i].score + "</p>";
+        }
+    } else if (currentLeaderboard.length >= quizChoiceEl.length){
+         // For loop that populates the elements with only the top 4 scores
+         for (var i = 0; i < quizChoiceEl.length; i++){
+            quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + currentLeaderboard[i].score + "</p>";
+        }
+    }
 }
 
 // Function for reinitializing the page
 function pageReInit(){
-    // Remove main menu button (since this function is only reference in buildHighScores())
-    startButtonEl.firstElementChild.remove();
+    // Remove extra buttons generated from the buildHighScores function
+    for (var i = 0; i <= startButtonEl.childElementCount; i++){
+        startButtonEl.firstElementChild.remove();
+    }
     pageInit();
+}
+
+// Function for clearing the leaderboard
+function clearScore(){
+    localStorage.clear();
+    buildHighScores();
+}
+
+// Function for removing buttons from startButtonEl
+function removeButtons(){
+    // Remove generated buttons in the startButtonEl element
+    for (var i = 0; i <= startButtonEl.childElementCount; i++){
+        startButtonEl.firstElementChild.remove();
+    }
 }
 
 // Function for page initialization
@@ -223,5 +255,6 @@ function pageInit(){
 }
 
 pageInit();
+
 // Event listener for the high scores button
 highScoresBtn.addEventListener("click", buildHighScores);
