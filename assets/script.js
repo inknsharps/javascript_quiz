@@ -21,12 +21,39 @@ var jsQuestionsAnswers = [
     {
         question: "<h2 data-state='correct'>Which of the following is the correct syntax to print a page using JavaScript?</h2>",
         answers: [
-            "<button type='button' data-value='0' data-state='correct'>window.print();</button>",
-            "<button type='button' data-value='1' data-state='incorrect'>browser.print();</button>",
-            "<button type='button' data-value='2' data-state='incorrect'>navigator.print();</button>",
-            "<button type='button' data-value='3' data-state='incorrect'>document.print();</button>"
+            "<button type='button' data-value='0' data-state='correct'>window.print()</button>",
+            "<button type='button' data-value='1' data-state='incorrect'>browser.print()</button>",
+            "<button type='button' data-value='2' data-state='incorrect'>navigator.print()</button>",
+            "<button type='button' data-value='3' data-state='incorrect'>document.print()</button>"
         ]
     },
+    {
+        question: "<h2 data-state='correct'>Which of the following type of variable takes precedence over other if names are same?</h2>",
+        answers: [
+            "<button type='button' data-value='0' data-state='incorrect'>Global variable</button>",
+            "<button type='button' data-value='1' data-state='correct'>Local variable</button>",
+            "<button type='button' data-value='2' data-state='incorrect'>Both of the above.</button>",
+            "<button type='button' data-value='3' data-state='incorrect'>None of the above.</button>"
+        ]
+    },
+    {
+        question: "<h2 data-state='correct'>Which built-in method returns the string representation of the number's value?</h2>",
+        answers: [
+            "<button type='button' data-value='0' data-state='incorrect'>toValue()</button>",
+            "<button type='button' data-value='1' data-state='incorrect'>toNumber()</button>",
+            "<button type='button' data-value='2' data-state='correct'>toString()</button>",
+            "<button type='button' data-value='3' data-state='incorrect'>None of the above.</button>"
+        ]
+    },
+    {
+        question: "<h2 data-state='correct'>Which of the following function of String object returns the character at the specified index?</h2>",
+        answers: [
+            "<button type='button' data-value='0' data-state='correct'>charAt()</button>",
+            "<button type='button' data-value='1' data-state='incorrect'>charCodeAt()</button>",
+            "<button type='button' data-value='2' data-state='incorrect'>concat()</button>",
+            "<button type='button' data-value='3' data-state='incorrect'>indexOf()</button>"
+        ]
+    }
 ]
 
 // Query Selectors for elements on the page
@@ -40,7 +67,7 @@ var answerValidityEl = document.querySelector(".answer-validity");
 
 // Function for timer
 function startTimer(){
-    timeRemaining = 100;
+    timeRemaining = 50;
     timeInterval = setInterval(function(){
         if (timeRemaining !== 0){
             timeRemaining--;
@@ -241,7 +268,7 @@ function removeButtons(){
 function pageInit(){
     // Create HTML elements for the description on the main menu
     quizQuestionEl.innerHTML = "<h2>Test your knowledge of Javascript with this multiple choice quiz!</h2>";
-    quizChoiceEl[0].innerHTML = "<p>There will be a total of 10 questions, and you will have a time limit of 100 seconds to answer them all.</p>";
+    quizChoiceEl[0].innerHTML = "<p>There will be a total of 5 questions, and you will have a time limit of 50 seconds to answer them all.</p>";
     quizChoiceEl[1].innerHTML = "<p>Every time a question is incorrectly answered, 5 seconds will be subtracted from the timer.</p>";
     quizChoiceEl[2].innerHTML = "<p>When you are finished with the quiz, your score will be equal to the time left.</p>";
     quizChoiceEl[3].innerHTML = "<p>Answer questions correctly, and aim for a high score!</p>";
