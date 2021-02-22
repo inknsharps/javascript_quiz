@@ -40,7 +40,6 @@ var answerValidityEl = document.querySelector(".answer-validity");
 
 // Function for timer
 function startTimer(){
-    clearInterval(timeInterval); // In case restart quiz was clicked
     timeRemaining = 100;
     timeInterval = setInterval(function(){
         if (timeRemaining !== 0){
@@ -57,13 +56,12 @@ function startTimer(){
 // Function to remove the start button, question and answer choices
 function clearQuestionAndChoice(){
     quizQuestionEl.firstElementChild.remove();
-    startButtonEl.innerHTML = "<button type='button' class='restart'>Restart</button>"
-    var restartButtonEl = document.querySelector(".restart");
-    restartButtonEl.addEventListener("click", pageInit);
-    // For loop that removes all the children elements of the quiz-choice class
+    // For loop that removes all the children elements of the quiz-choice class, if they exist
     for (var i = 0; i < quizChoiceEl.length; i++){
-        quizChoiceEl[i].firstElementChild.remove();
-        quizChoiceEl[i].removeEventListener("click", selectAnswer);
+        if (quizChoiceEl[i].firstElementChild !== null){
+            quizChoiceEl[i].firstElementChild.remove();
+            quizChoiceEl[i].removeEventListener("click", selectAnswer);
+        }
     }
 }
 
@@ -81,6 +79,7 @@ function buildQuestionAndChoice(questionNum){
 function quizInit(){
     quizProgress = 0;
     startTimer();
+    startButtonEl.firstElementChild.remove(); // Remove start button
     clearQuestionAndChoice();
     buildQuestionAndChoice(quizProgress);
 }
@@ -93,6 +92,7 @@ function selectAnswer(event){
     answerValidation(answerChoice);
     quizProgress++;
     quizEndCheck();
+    // If the quiz is not over, build the next question
     if (quizProgress !== jsQuestionsAnswers.length){
         buildQuestionAndChoice(quizProgress);
     }
@@ -110,7 +110,7 @@ function compareAnswer(q, a){
     if (q === a){
         answerValidityEl.textContent = "Correct!";
     } else {
-        answerValidityEl.textContent = "Incorrect!"
+        answerValidityEl.textContent = "Incorrect!";
         timeRemaining -= 5; // Subtract time from the clock if answer was wrong
     }
 }
@@ -134,11 +134,16 @@ function buildEndScreen(){
     quizQuestionEl.innerHTML = "<h2>Your final score is " + finalScore + ".</h>";
     quizChoiceEl[0].innerHTML = "<label for='highscore'>Enter your initials to submit your score:</label>";
     quizChoiceEl[1].innerHTML = "<input type='text' class='initials'>";
-    quizChoiceEl[2].innerHTML = "<button type='button' class='submit-score'>Submit Score!</button>";
+    quizChoiceEl[2].innerHTML = " "
     quizChoiceEl[3].innerHTML = "<div></div>";
+    var submitBtn = document.createElement("button");
+    submitBtn.setAttribute("class", "submit");
+    var submitBtnText = document.createTextNode("Submit!");
+    submitBtn.appendChild(submitBtnText);
+    startButtonEl.appendChild(submitBtn);
     answerValidityEl.textContent = " "
     // Query selectors for score submission
-    var submitScoreBtn = document.querySelector(".submit-score");
+    var submitScoreBtn = document.querySelector(".submit");
     var initials = document.querySelector(".initials");
     // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
     currentLeaderboard = JSON.parse(localStorage.getItem("scoreArray")) || []; 
@@ -159,7 +164,6 @@ function buildEndScreen(){
 function compare(a, b){
     var playerA = a.score;
     var playerB = b.score;
-
     var comparison = 0;
     if (playerA > playerB){
         comparison = 1;
@@ -171,6 +175,12 @@ function compare(a, b){
 
 // Function to build high scores section
 function buildHighScores(){
+    // Stops the timer in case high scores are accessed during a quiz
+    clearInterval(timeInterval); 
+    // If statement to remove start button in case high scores are accessed from the main menu
+    if (startButtonEl.firstElementChild !== null){
+        startButtonEl.firstElementChild.remove();
+    }
     clearQuestionAndChoice();
     quizQuestionEl.innerHTML = "<h2>Current Leaderboard</h2>";
     // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
@@ -179,23 +189,39 @@ function buildHighScores(){
     for (var i = 0; i < quizChoiceEl.length; i++){
         quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + currentLeaderboard[i].score + "</p>";
     }
+    // Create HTML element for the main menu button
+    var mainMenuBtn = document.createElement("button");
+    mainMenuBtn.setAttribute("class", "menu");
+    var mainMenuBtnText = document.createTextNode("Main Menu!");
+    mainMenuBtn.appendChild(mainMenuBtnText);
+    startButtonEl.appendChild(mainMenuBtn);
+    mainMenuBtn.addEventListener("click", pageReInit);
 }
 
-function exitHighScores(){
-    mainBody.lastElementChild.remove();
+// Function for reinitializing the page
+function pageReInit(){
+    // Remove main menu button (since this function is only reference in buildHighScores())
+    startButtonEl.firstElementChild.remove();
     pageInit();
 }
 
+// Function for page initialization
 function pageInit(){
+    // Create HTML elements for the description on the main menu
     quizQuestionEl.innerHTML = "<h2>Test your knowledge of Javascript with this multiple choice quiz!</h2>";
     quizChoiceEl[0].innerHTML = "<p>There will be a total of 10 questions, and you will have a time limit of 100 seconds to answer them all.</p>";
     quizChoiceEl[1].innerHTML = "<p>Every time a question is incorrectly answered, 5 seconds will be subtracted from the timer.</p>";
     quizChoiceEl[2].innerHTML = "<p>When you are finished with the quiz, your score will be equal to the time left.</p>";
     quizChoiceEl[3].innerHTML = "<p>Answer questions correctly, and aim for a high score!</p>";
-    startButtonEl.innerHTML = "<button type='button' class='start'>Start Quiz!</button>"
+    // Create HTML element for the start quiz button
+    var startQuizBtn = document.createElement("button");
+    startQuizBtn.setAttribute("class", "start");
+    var startQuizBtnText = document.createTextNode("Start Quiz!");
+    startQuizBtn.appendChild(startQuizBtnText);
+    startButtonEl.appendChild(startQuizBtn);
+    startQuizBtn.addEventListener("click", quizInit);
 }
 
-pageInit()
-
-startButtonEl.addEventListener("click", quizInit);
+pageInit();
+// Event listener for the high scores button
 highScoresBtn.addEventListener("click", buildHighScores);
