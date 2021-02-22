@@ -4,6 +4,7 @@ var timeInterval; // Timer interval
 var quizProgress; // What question we're currently on
 var answerChoice; // A choice from 0-3
 var finalScore; // The final score for the game
+var currentLeaderboard; // The current leaderboard for the game
 
 // Question and answers variable
 // Answers are used as an array for future methods, as well as adding innerHTML data
@@ -40,11 +41,11 @@ var answerValidityEl = document.querySelector(".answer-validity");
 // Function for timer
 function startTimer(){
     clearInterval(timeInterval); // In case restart quiz was clicked
-    timeRemaining = 10;
+    timeRemaining = 100;
     timeInterval = setInterval(function(){
         if (timeRemaining !== 0){
-            timerEl.textContent = timeRemaining;
             timeRemaining--;
+            timerEl.textContent = timeRemaining;
         } else {
             clearInterval(timeInterval);
             timerEl.textContent = timeRemaining;
@@ -56,7 +57,9 @@ function startTimer(){
 // Function to remove the start button, question and answer choices
 function clearQuestionAndChoice(){
     quizQuestionEl.firstElementChild.remove();
-    startButtonEl.innerHTML = "<button type='button' class='start'>Restart</button>"
+    startButtonEl.innerHTML = "<button type='button' class='restart'>Restart</button>"
+    var restartButtonEl = document.querySelector(".restart");
+    restartButtonEl.addEventListener("click", pageInit);
     // For loop that removes all the children elements of the quiz-choice class
     for (var i = 0; i < quizChoiceEl.length; i++){
         quizChoiceEl[i].firstElementChild.remove();
@@ -133,29 +136,49 @@ function buildEndScreen(){
     quizChoiceEl[1].innerHTML = "<input type='text' class='initials'>";
     quizChoiceEl[2].innerHTML = "<button type='button' class='submit-score'>Submit Score!</button>";
     quizChoiceEl[3].innerHTML = "<div></div>";
-    // submitScore button functionality
-    // Query selectors for the buttons
+    answerValidityEl.textContent = " "
+    // Query selectors for score submission
     var submitScoreBtn = document.querySelector(".submit-score");
     var initials = document.querySelector(".initials");
-    // Event listener for the submit button, which stringifies the initial and finalScore to the localStorage, then takes you to the high scores screen
+    // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
+    currentLeaderboard = JSON.parse(localStorage.getItem("scoreArray")) || []; 
+    // Event listener for when the submitScoreBtn is clicked
     submitScoreBtn.addEventListener("click", () => {
-        var highscoreRecord = {
-            initials: initials.value,
-            score: finalScore
-        };
-        localStorage.setItem("highscoreRecord", JSON.stringify(highscoreRecord));
-        buildHighScores();
-    });
+        var newScore = {
+            score: finalScore,
+            initials: initials.value
+        }
+        currentLeaderboard.push(newScore); // Pushes the newScore object created, into the current leaderboard
+        currentLeaderboard.sort(compare); // Sorts the array so that only the top 4 scores show later
+        localStorage.setItem("scoreArray", JSON.stringify(currentLeaderboard)); // Turns the currentLeaderboard back into a JSON string
+        buildHighScores(); 
+    })        
 }
 
-// Function to build the high scores screen
+// Function to compare objects in currentLeaderboard, so they can be fed through the .sort method for leaderboard organization
+function compare(a, b){
+    var playerA = a.score;
+    var playerB = b.score;
+
+    var comparison = 0;
+    if (playerA > playerB){
+        comparison = 1;
+    } else if (playerA < playerB){
+        comparison = -1;
+    }
+    return comparison * -1;
+}
+
+// Function to build high scores section
 function buildHighScores(){
     clearQuestionAndChoice();
-    var leaderboard = document.createElement("p");
-    var leaderboardValues = JSON.parse(localStorage.getItem("highscoreRecord"));
-    var leaderboardContent = document.createTextNode(leaderboardValues.initials + " " + leaderboardValues.score)
-    leaderboard.appendChild(leaderboardContent);
-    mainBody.appendChild(leaderboard);
+    quizQuestionEl.innerHTML = "<h2>Current Leaderboard</h2>";
+    // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
+    currentLeaderboard = JSON.parse(localStorage.getItem("scoreArray")) || [];
+    // For loop that populates the elements with the top 4 scores
+    for (var i = 0; i < quizChoiceEl.length; i++){
+        quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + currentLeaderboard[i].score + "</p>";
+    }
 }
 
 function exitHighScores(){
