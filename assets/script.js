@@ -68,7 +68,7 @@ var answerValidityEl = document.querySelector(".answer-validity");
 // Function for timer
 function startTimer(){
     timeRemaining = 50;
-    timeInterval = setInterval(function(){
+    timeInterval = setInterval(() => {
         if (timeRemaining !== 0){
             timeRemaining--;
             timerEl.textContent = timeRemaining;
@@ -86,8 +86,8 @@ function clearQuestionAndChoice(){
     // For loop that removes all the children elements of the quiz-choice class, if they exist
     for (var i = 0; i < quizChoiceEl.length; i++){
         if (quizChoiceEl[i].firstElementChild !== null){
+            quizChoiceEl[i].firstElementChild.removeEventListener("click", selectAnswer);
             quizChoiceEl[i].firstElementChild.remove();
-            quizChoiceEl[i].removeEventListener("click", selectAnswer);
         }
     }
 }
@@ -98,7 +98,18 @@ function buildQuestionAndChoice(questionNum){
     // For loop that adds the questions as children to the quiz-choice class
     for (var i = 0; i < quizChoiceEl.length; i++){
         quizChoiceEl[i].innerHTML = jsQuestionsAnswers[questionNum].answers[i];
-        quizChoiceEl[i].addEventListener("click", selectAnswer);
+        quizChoiceEl[i].firstElementChild.addEventListener("click", selectAnswer);
+    }
+}
+
+// Function for removing buttons from startButtonEl
+function removeButtons(){
+    // If startButtonEl has something...
+    if (startButtonEl.firstElementChild !== null){
+        // ...Remove generated buttons in the startButtonEl element
+        for (var i = 0; i <= startButtonEl.childElementCount; i++){
+            startButtonEl.firstElementChild.remove();
+        }
     }
 }
 
@@ -176,14 +187,14 @@ function buildEndScreen(){
     quizQuestionEl.innerHTML = "<h2>Your final score is " + finalScore + ".</h>";
     quizChoiceEl[0].innerHTML = "<label for='highscore'>Enter your initials to submit your score:</label>";
     quizChoiceEl[1].innerHTML = "<input type='text' class='initials'>";
-    quizChoiceEl[2].innerHTML = " "
-    quizChoiceEl[3].innerHTML = "<div></div>";
+    quizChoiceEl[2].innerHTML = " ";
+    quizChoiceEl[3].innerHTML = " ";
     var submitBtn = document.createElement("button");
     submitBtn.setAttribute("class", "submit");
     var submitBtnText = document.createTextNode("Submit!");
     submitBtn.appendChild(submitBtnText);
     startButtonEl.appendChild(submitBtn);
-    answerValidityEl.textContent = " "
+    answerValidityEl.textContent = " ";
     // Query selectors for score submission
     var submitScoreBtn = document.querySelector(".submit");
     var initials = document.querySelector(".initials");
@@ -199,7 +210,7 @@ function buildEndScreen(){
         currentLeaderboard.sort(compare); // Sorts the array so that only the top 4 scores show later
         localStorage.setItem("scoreArray", JSON.stringify(currentLeaderboard)); // Turns the currentLeaderboard back into a JSON string
         buildHighScores(); 
-    })        
+    });        
 }
 
 // Function to compare objects in currentLeaderboard, so they can be fed through the .sort method for leaderboard organization
@@ -269,17 +280,6 @@ function pageReInit(){
 function clearScore(){
     localStorage.clear();
     buildHighScores();
-}
-
-// Function for removing buttons from startButtonEl
-function removeButtons(){
-    // If startButtonEl has something...
-    if (startButtonEl.firstElementChild !== null){
-        // ...Remove generated buttons in the startButtonEl element
-        for (var i = 0; i <= startButtonEl.childElementCount; i++){
-            startButtonEl.firstElementChild.remove();
-        }
-    }
 }
 
 // Function for page initialization
