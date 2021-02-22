@@ -113,6 +113,16 @@ function removeButtons(){
     }
 }
 
+// Function to build a button element with class, text content, and function parameters
+function buildButton(cla, txt, func){
+    cla = document.createElement("button");
+    cla.setAttribute("class", cla);
+    txt = document.createTextNode(txt);
+    cla.appendChild(txt);
+    startButtonEl.appendChild(cla);
+    cla.addEventListener("click", func);
+}
+
 // Function to initialize the quiz
 function quizInit(){
     quizProgress = 0;
@@ -189,19 +199,14 @@ function buildEndScreen(){
     quizChoiceEl[1].innerHTML = "<input type='text' class='initials'>";
     quizChoiceEl[2].innerHTML = " ";
     quizChoiceEl[3].innerHTML = " ";
-    var submitBtn = document.createElement("button");
-    submitBtn.setAttribute("class", "submit");
-    var submitBtnText = document.createTextNode("Submit!");
-    submitBtn.appendChild(submitBtnText);
-    startButtonEl.appendChild(submitBtn);
+    buildButton("submit", "Submit Score!", submitScore);
     answerValidityEl.textContent = " ";
-    // Query selectors for score submission
-    var submitScoreBtn = document.querySelector(".submit");
+    // Query selector for name submission input tag
     var initials = document.querySelector(".initials");
     // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
     currentLeaderboard = JSON.parse(localStorage.getItem("scoreArray")) || []; 
-    // Event listener for when the submitScoreBtn is clicked
-    submitScoreBtn.addEventListener("click", () => {
+    // Function to submit a score (only used in buildEndScreen() so just declared locally)
+    function submitScore(){
         var newScore = {
             score: finalScore,
             initials: initials.value
@@ -210,7 +215,7 @@ function buildEndScreen(){
         currentLeaderboard.sort(compare); // Sorts the array so that only the top 4 scores show later
         localStorage.setItem("scoreArray", JSON.stringify(currentLeaderboard)); // Turns the currentLeaderboard back into a JSON string
         buildHighScores(); 
-    });        
+    }
 }
 
 // Function to compare objects in currentLeaderboard, so they can be fed through the .sort method for leaderboard organization
@@ -236,20 +241,10 @@ function buildHighScores(){
     // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
     currentLeaderboard = JSON.parse(localStorage.getItem("scoreArray")) || [];
     buildLeaderboard();
-    // Create HTML element for the main menu button
-    var mainMenuBtn = document.createElement("button");
-    mainMenuBtn.setAttribute("class", "menu");
-    var mainMenuBtnText = document.createTextNode("Main Menu!");
-    mainMenuBtn.appendChild(mainMenuBtnText);
-    startButtonEl.appendChild(mainMenuBtn);
-    mainMenuBtn.addEventListener("click", pageReInit);
-    // Create HTML element for the clear leaderboard button
-    var clearScoreBtn = document.createElement("button");
-    clearScoreBtn.setAttribute("class", "clear");
-    var clearScoreBtnText = document.createTextNode("Clear Leaderboard!");
-    clearScoreBtn.appendChild(clearScoreBtnText);
-    startButtonEl.appendChild(clearScoreBtn);
-    clearScoreBtn.addEventListener("click", clearScore);
+    // Create HTML button element for the main menu button
+    buildButton("menu", "Main Menu!", pageReInit);
+    // Create HTML button element for the clear leaderboard button
+    buildButton("clear", "Clear Leaderboard!", clearScore);
 }
 
 // Function for building leaderboard
@@ -291,12 +286,7 @@ function pageInit(){
     quizChoiceEl[2].innerHTML = "<p>When you are finished with the quiz, your score will be equal to the time left.</p>";
     quizChoiceEl[3].innerHTML = "<p>Answer questions correctly, and aim for a high score!</p>";
     // Create HTML element for the start quiz button
-    var startQuizBtn = document.createElement("button");
-    startQuizBtn.setAttribute("class", "start");
-    var startQuizBtnText = document.createTextNode("Start Quiz!");
-    startQuizBtn.appendChild(startQuizBtnText);
-    startButtonEl.appendChild(startQuizBtn);
-    startQuizBtn.addEventListener("click", quizInit);
+    buildButton("start", "Start Quiz!", quizInit);
 }
 
 pageInit();
