@@ -257,12 +257,12 @@ function buildLeaderboard(){
     if (currentLeaderboard.length < quizChoiceEl.length){
         // For loop that populates the elements with the top 4 scores, if the currentLeaderboard is less than 4 records
         for (var i = 0; i < currentLeaderboard.length; i++){
-            quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + currentLeaderboard[i].score + "</p>";
+            quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + " " + currentLeaderboard[i].score + "</p>";
         }
     } else if (currentLeaderboard.length >= quizChoiceEl.length){
          // For loop that populates the elements with only the top 4 scores
          for (var i = 0; i < quizChoiceEl.length; i++){
-            quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + currentLeaderboard[i].score + "</p>";
+            quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + " " + currentLeaderboard[i].score + "</p>";
         }
     }
 }
