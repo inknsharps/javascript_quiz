@@ -214,8 +214,7 @@ function buildEndScreen(){
             score: finalScore,
             name: initials.value
         }
-        console.log(newScore.name);
-        // If statement in case the user doesn't input a name but submits a score, generates a random anonymous name
+        // If statement in case the user doesn't input a name but submits a score, generates a random anonymous animal name
         if (initials.value === ""){
             var anonymousAnimals = ["Alligator", "Bear", "Chinchilla", "Duck", "Elephant", "Frog", "Giraffe", "Hippo", "Jackal", "Ibex", "Koala", "Llama", "Manatee", "Narwhal", "Otter", "Panda", "Quokka", "Squirrel", "Turtle", "Unicorn", "Walrus"]
             newScore.name = "Anonymous " + anonymousAnimals[Math.floor(Math.random()*anonymousAnimals.length)];

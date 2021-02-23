@@ -10,8 +10,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center ;
-    margin: 4vh;
-    padding: 0 25vh;
+    margin: 4vh 6vh;
+    padding: 0 20vh;
     font-family: 'Courier New', Courier, monospace;
     font-size: 14px;
     color: var(--text-color-1);
@@ -58,7 +58,7 @@ main {
 
 .quiz-question {
     border: 2px dashed rgb(175, 175, 175);
-    margin: 0 0 5vh;
+    margin: 0 5vh 5vh;
     background-color: var(--header-color);
 }
 
@@ -70,11 +70,17 @@ main {
 
 .quiz-choice {
     width: 50vh;
+    padding: 0 5vh;
+}
+
+.start-button {
+    display: flex;
+    flex-direction: column;
 }
 
 .answer-validity {
     align-content: center;
-}
+}   
 
 button {
     margin: 2vh;
@@ -96,10 +102,10 @@ input {
     background-color: #21212100
 }
 
-footer {
+/* footer {
     position: fixed;
     bottom: 1vh;
-}
+} */
 
 @media screen and (min-width:768px) {
     body {
