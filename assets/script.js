@@ -215,9 +215,10 @@ function buildEndScreen(){
             name: initials.value
         }
         console.log(newScore.name);
-        // If statement in case the user doesn't input a name but submits a score
+        // If statement in case the user doesn't input a name but submits a score, generates a random anonymous name
         if (initials.value === ""){
-            newScore.name = "Anonymous Duck";
+            var anonymousAnimals = ["Alligator", "Bear", "Chinchilla", "Duck", "Elephant", "Frog", "Giraffe", "Hippo", "Jackal", "Ibex", "Koala", "Llama", "Manatee", "Narwhal", "Otter", "Panda", "Quokka", "Squirrel", "Turtle", "Unicorn", "Walrus"]
+            newScore.name = "Anonymous " + anonymousAnimals[Math.floor(Math.random()*anonymousAnimals.length)];
         }
         currentLeaderboard.push(newScore); // Pushes the newScore object created, into the current leaderboard
         // Function to compare objects in currentLeaderboard, so they can be fed through the .sort method for leaderboard organization
