@@ -197,11 +197,11 @@ function buildEndScreen(){
     clearQuestionAndChoice();
     // HTML elements for end screen
     quizQuestionEl.innerHTML = "<h2>Your final score is " + finalScore + ".</h>";
-    quizChoiceEl[0].innerHTML = "<label for='highscore'>Enter your initials to submit your score:</label>";
+    quizChoiceEl[0].innerHTML = "<label for='highscore'>Enter your name or initials to submit your score:</label>";
     quizChoiceEl[1].innerHTML = "<input type='text' class='initials'>";
     quizChoiceEl[2].innerHTML = " ";
     quizChoiceEl[3].innerHTML = " ";
-    quizChoiceEl[1].firstElementChild.focus();  
+    quizChoiceEl[1].firstElementChild.focus(); // Focuses on the empty input field for accessibility
     buildButton("submit", "Submit Score!", submitScore);
     answerValidityEl.textContent = " ";
     // Query selector for name submission input tag
