@@ -1,6 +1,6 @@
 # Javascript Quiz
 
-This is a multiple choice quiz web application that tests your knowledge on Javascript.
+This is a multiple choice quiz web application that tests your knowledge on Javascript. Play a deployed version <a href="https://inknsharps.github.io/javascript_quiz/">here</a>!
 
 ## Gameplay Description
 
