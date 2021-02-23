@@ -90,6 +90,7 @@ function quizInit(){
 
 // Function to check quiz end procedures
 function quizEndCheck(){
+    // If the time hits 0, or if quizProgress is equal to the jsQuestionsAnswers array length (meaning all the questions have been answered), end the quiz
     if (timeRemaining === 0){
         finalScore = timeRemaining;
         buildEndScreen();
@@ -102,6 +103,7 @@ function quizEndCheck(){
 
 // Function to remove the start button, question and answer choices
 function clearQuestionAndChoice(){
+    // Remove the question element children
     quizQuestionEl.firstElementChild.remove();
     // For loop that removes all the children elements of the quiz-choice class, if they exist
     for (var i = 0; i < quizChoiceEl.length; i++){
@@ -114,6 +116,7 @@ function clearQuestionAndChoice(){
 
 // Function to build a question and answer choices, as well as adds click event listeners for answer selection
 function buildQuestionAndChoice(questionNum){
+    // Populates the question element with a queestion from jsQuestionsAnswers
     quizQuestionEl.innerHTML = jsQuestionsAnswers[questionNum].question;
     // For loop that adds the questions as children to the quiz-choice class
     for (var i = 0; i < quizChoiceEl.length; i++){
@@ -126,7 +129,7 @@ function buildQuestionAndChoice(questionNum){
 function removeButtons(){
     // If startButtonEl has something...
     if (startButtonEl.firstElementChild !== null){
-        // ...Remove generated buttons in the startButtonEl element
+        // ...Remove those elements in the startButtonEl element
         for (var i = 0; i <= startButtonEl.childElementCount; i++){
             startButtonEl.firstElementChild.remove();
         }
@@ -147,11 +150,13 @@ function buildButton(cla, txt, func){
 function selectAnswer(event){
     event.stopPropagation();
     event.preventDefault();
+    // Declare variable for the button the user clicked, which should equal to the "data-value" attribute of that button
     answerChoice = event.target.getAttribute("data-value");
-    // Function for validating answer
+    // Function for validating chosen answer
     function answerValidation(choice){
+        // Declare variables for the question and answer's "data-state" attribute (which would be either correct or incorrect)
         var questionState = quizQuestionEl.firstElementChild.getAttribute("data-state");
-        var chosenAnswer = quizChoiceEl[choice].firstElementChild.getAttribute("data-state");
+        var answerState = quizChoiceEl[choice].firstElementChild.getAttribute("data-state");
         // Function to compare question to answer
         function compareAnswer(q, a){
             if (q === a){
@@ -174,8 +179,10 @@ function selectAnswer(event){
                 }
             }, 250);
         }
-        compareAnswer(questionState, chosenAnswer);
+        // Call compareAnswer() to compare the "data-state" attributes between the question and answer
+        compareAnswer(questionState, answerState);
     }
+    // Call answerValidation(), which inputs the answerChoice variable into the function
     answerValidation(answerChoice);
     quizProgress++;
     quizEndCheck();
@@ -200,7 +207,7 @@ function buildEndScreen(){
     var initials = document.querySelector(".initials");
     // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
     currentLeaderboard = JSON.parse(localStorage.getItem("scoreArray")) || []; 
-    // Function to submit a score (only used in buildEndScreen() so just declared locally)
+    // Function to submit a score
     function submitScore(){
         var newScore = {
             score: finalScore,
