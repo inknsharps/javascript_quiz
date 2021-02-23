@@ -10,9 +10,10 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center ;
-    margin: 10vh;
+    margin: 4vh;
+    padding: 0 25vh;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 18px;
+    font-size: 14px;
     color: var(--text-color-1);
     background-color: var(--background-color);
 }
@@ -20,23 +21,11 @@ body {
 header {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: flex-start;
     border: 2px dashed rgb(175, 175, 175);
-    padding: 2vh 10vh;
-    margin: 0vh 20vh;
     background-color: var(--header-color);   
-}
-
-header h1 {
-    font-size: 36px;
-}
-
-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 5vh 20vh;
 }
 
 .viewscore-section,
@@ -50,10 +39,21 @@ main {
     padding: 3vh 10vh;
 }
 
+.header-title {
+    padding-left: 7vh;
+}
+
 .timer-section p {
     padding: 1vh 0  ;
     color: var(--text-color-2); 
     background-color: var(--header-color);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5vh 8vh;
 }
 
 .quiz-question {
@@ -64,8 +64,12 @@ main {
 
 .quiz-question h2 {
     padding: 2vh 3vh;
-    font-size: 22px;
+    /* font-size: 14px; */
     color: var(--text-color-2);
+}
+
+.quiz-choice {
+    width: 50vh;
 }
 
 .answer-validity {
@@ -95,6 +99,24 @@ input {
 footer {
     position: fixed;
     bottom: 1vh;
+}
+
+@media screen and (min-width:768px) {
+    body {
+        font-size: 18px;
+    }
+
+    header {
+        flex-wrap: nowrap;
+    }
+
+    header h1 {
+    font-size: 27px;
+    }
+
+    .quiz-question h2 {
+        font-size: 20px;
+    }
 }
 
 @keyframes breathingGlow {
