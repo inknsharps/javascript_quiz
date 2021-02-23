@@ -201,6 +201,7 @@ function buildEndScreen(){
     quizChoiceEl[1].innerHTML = "<input type='text' class='initials'>";
     quizChoiceEl[2].innerHTML = " ";
     quizChoiceEl[3].innerHTML = " ";
+    quizChoiceEl[1].firstElementChild.focus();  
     buildButton("submit", "Submit Score!", submitScore);
     answerValidityEl.textContent = " ";
     // Query selector for name submission input tag

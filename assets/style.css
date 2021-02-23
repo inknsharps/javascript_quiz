@@ -1,25 +1,105 @@
+:root {
+    --background-color: #212121;
+    --text-color-1: #0E750E;
+    --text-color-2: #ffffff;
+    --header-color: #807a7a0c;
+    --header-color-2: #807a7a4d;
+}
+
 body {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center ;
+    margin: 10vh;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    color: var(--text-color-1);
+    background-color: var(--background-color);
 }
 
 header {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    border: 2px dashed rgb(175, 175, 175);
+    padding: 2vh 10vh;
+    margin: 0vh 20vh;
+    background-color: var(--header-color);   
+}
+
+header h1 {
+    font-size: 36px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5vh 20vh;
 }
 
 .viewscore-section,
 .timer-section,
 .header-title {
     flex: 1 1 33.33%;
+}
+
+.timer-section,
+.viewscore-section {
     padding: 3vh 10vh;
-    width: 35vh;
-    height: 10vh;
+}
+
+.timer-section p {
+    padding: 1vh 0  ;
+    color: var(--text-color-2); 
+    background-color: var(--header-color);
+}
+
+.quiz-question {
+    border: 2px dashed rgb(175, 175, 175);
+    margin: 0 0 5vh;
+    background-color: var(--header-color);
+}
+
+.quiz-question h2 {
+    padding: 2vh 3vh;
+    font-size: 22px;
+    color: var(--text-color-2);
 }
 
 .answer-validity {
     align-content: center;
+}
+
+button {
+    margin: 2vh;
+    color: var(--text-color-2);
+    background-color: var(--header-color-2);
+}
+
+button:hover {
+    animation: breathingGlow;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+input {
+    margin: 2vh;
+    border: none;
+    color: var(--text-color-1);
+    background-color: #21212100
+}
+
+footer {
+    position: fixed;
+    bottom: 1vh;
+}
+
+@keyframes breathingGlow {
+    from {box-shadow: none;}
+    to {box-shadow: 
+            inset 1px 1px 1px var(--text-color-1),
+            1px 1px 1px var(--text-color-1);};
 }
