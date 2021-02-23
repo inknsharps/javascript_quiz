@@ -212,7 +212,12 @@ function buildEndScreen(){
     function submitScore(){
         var newScore = {
             score: finalScore,
-            initials: initials.value
+            name: initials.value
+        }
+        console.log(newScore.name);
+        // If statement in case the user doesn't input a name but submits a score
+        if (initials.value === ""){
+            newScore.name = "Anonymous Duck";
         }
         currentLeaderboard.push(newScore); // Pushes the newScore object created, into the current leaderboard
         // Function to compare objects in currentLeaderboard, so they can be fed through the .sort method for leaderboard organization
@@ -247,12 +252,12 @@ function buildHighScores(){
         if (currentLeaderboard.length < quizChoiceEl.length){
             // For loop that populates the elements with the top 4 scores, if the currentLeaderboard is less than 4 records
             for (var i = 0; i < currentLeaderboard.length; i++){
-                quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + " " + currentLeaderboard[i].score + "</p>";
+                quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].name + " " + currentLeaderboard[i].score + "</p>";
             }
         } else if (currentLeaderboard.length >= quizChoiceEl.length){
             // For loop that populates the elements with only the top 4 scores
             for (var i = 0; i < quizChoiceEl.length; i++){
-                quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].initials + " " + currentLeaderboard[i].score + "</p>";
+                quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].name + " " + currentLeaderboard[i].score + "</p>";
             }
         }
     }
