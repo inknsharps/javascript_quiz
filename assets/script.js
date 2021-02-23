@@ -72,7 +72,7 @@ function quizInit(){
     function startTimer(){
         timeRemaining = 50;
         timeInterval = setInterval(() => {
-            if (timeRemaining !== 0){
+            if (timeRemaining > 0){
                 timeRemaining--;
                 timerEl.textContent = timeRemaining;
             } else {
@@ -90,8 +90,8 @@ function quizInit(){
 
 // Function to check quiz end procedures
 function quizEndCheck(){
-    // If the time hits 0, or if quizProgress is equal to the jsQuestionsAnswers array length (meaning all the questions have been answered), end the quiz
-    if (timeRemaining === 0){
+    // If the time hits 0 or less, or if quizProgress is equal to the jsQuestionsAnswers array length (meaning all the questions have been answered), end the quiz
+    if (timeRemaining <= 0){
         finalScore = timeRemaining;
         buildEndScreen();
     } else if (quizProgress === jsQuestionsAnswers.length){

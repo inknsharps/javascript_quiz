@@ -44,7 +44,8 @@ header {
 }
 
 .timer-section p {
-    padding: 1vh 0  ;
+    padding: 1vh 0;
+    text-align: center;
     color: var(--text-color-2); 
     background-color: var(--header-color);
 }
@@ -79,7 +80,9 @@ main {
 }
 
 .answer-validity {
+    position: absolute;
     align-content: center;
+    bottom: -15vh;
 }   
 
 button {
@@ -102,10 +105,14 @@ input {
     background-color: #21212100
 }
 
-/* footer {
-    position: fixed;
-    bottom: 1vh;
-} */
+footer section {
+    display: flex;
+    flex-direction: row;
+}
+
+footer section h3 {
+    margin-right: 10vh;
+}
 
 @media screen and (min-width:768px) {
     body {
@@ -122,6 +129,14 @@ input {
 
     .quiz-question h2 {
         font-size: 20px;
+    }
+
+    .answer-validity {
+        bottom: 23vh;
+    }
+
+    footer {
+        margin-top: 10vh;
     }
 }
 
