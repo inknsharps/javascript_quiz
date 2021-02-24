@@ -5,6 +5,7 @@ var quizProgress; // What question we're currently on
 var answerChoice; // A choice from 0-3
 var finalScore; // The final score for the game
 var currentLeaderboard; // The current leaderboard for the game
+var initials; // The name entry value when submitting a score
 
 // Question and answers variable
 // Answers are used as an array for future methods, as well as adding innerHTML data
@@ -68,24 +69,25 @@ var answerValidityEl = document.querySelector(".answer-validity");
 // Function to initialize the quiz
 function quizInit(){
     quizProgress = 0;
-    // Function for timer
-    function startTimer(){
-        timeRemaining = 50;
-        timeInterval = setInterval(() => {
-            if (timeRemaining > 0){
-                timeRemaining--;
-                timerEl.textContent = timeRemaining;
-            } else {
-                clearInterval(timeInterval);
-                timerEl.textContent = timeRemaining;
-                quizEndCheck();
-            }
-        }, 1000);
-    }
     startTimer();
     removeButtons();
     clearQuestionAndChoice();
     buildQuestionAndChoice(quizProgress);
+}
+
+// Function for timer
+function startTimer(){
+    timeRemaining = 50;
+    timeInterval = setInterval(() => {
+        if (timeRemaining > 0){
+            timeRemaining--;
+            timerEl.textContent = timeRemaining;
+        } else {
+            clearInterval(timeInterval);
+            timerEl.textContent = timeRemaining;
+            quizEndCheck();
+        }
+    }, 1000);
 }
 
 // Function to check quiz end procedures
@@ -152,36 +154,6 @@ function selectAnswer(event){
     event.preventDefault();
     // Declare variable for the button the user clicked, which should equal to the "data-value" attribute of that button
     answerChoice = event.target.getAttribute("data-value");
-    // Function for validating chosen answer
-    function answerValidation(choice){
-        // Declare variables for the question and answer's "data-state" attribute (which would be either correct or incorrect)
-        var questionState = quizQuestionEl.firstElementChild.getAttribute("data-state");
-        var answerState = quizChoiceEl[choice].firstElementChild.getAttribute("data-state");
-        // Function to compare question to answer
-        function compareAnswer(q, a){
-            if (q === a){
-                flashMessage("Correct!");
-            } else {
-                flashMessage("Incorrect!");
-                timeRemaining -= 5; // Subtract time from the clock if answer was wrong
-            }
-        }
-        // Function to quickly display a message and remove it
-        function flashMessage(message){
-            var flashTimer = 4;
-            var flashInterval = setInterval(() => {
-                if (flashTimer !== 0){
-                    flashTimer--;
-                    answerValidityEl.textContent = message;
-                } else {
-                    clearInterval(flashInterval);
-                    answerValidityEl.textContent = " ";
-                }
-            }, 250);
-        }
-        // Call compareAnswer() to compare the "data-state" attributes between the question and answer
-        compareAnswer(questionState, answerState);
-    }
     // Call answerValidation(), which inputs the answerChoice variable into the function
     answerValidation(answerChoice);
     quizProgress++;
@@ -190,6 +162,38 @@ function selectAnswer(event){
     if (quizProgress !== jsQuestionsAnswers.length){
         buildQuestionAndChoice(quizProgress);
     }
+}
+
+// Function for validating chosen answer
+function answerValidation(choice){
+    // Declare variables for the question and answer's "data-state" attribute (which would be either correct or incorrect)
+    var questionState = quizQuestionEl.firstElementChild.getAttribute("data-state");
+    var answerState = quizChoiceEl[choice].firstElementChild.getAttribute("data-state");
+    compareAnswer(questionState, answerState);
+}
+
+// Function to compare the "data-state" attributes between the question and answer
+function compareAnswer(q, a){
+    if (q === a){
+        flashMessage("Correct!");
+    } else {
+        flashMessage("Incorrect!");
+        timeRemaining -= 5; // Subtract time from the clock if answer was wrong
+    }
+}
+
+ // Function to quickly display a message and remove it
+function flashMessage(message){
+    var flashTimer = 4;
+    var flashInterval = setInterval(() => {
+        if (flashTimer !== 0){
+            flashTimer--;
+            answerValidityEl.textContent = message;
+        } else {
+            clearInterval(flashInterval);
+            answerValidityEl.textContent = " ";
+        }
+    }, 250);
 }
 
 // Function to build quiz end screen
@@ -205,37 +209,39 @@ function buildEndScreen(){
     buildButton("submit", "Submit Score!", submitScore);
     answerValidityEl.textContent = " ";
     // Query selector for name submission input tag
-    var initials = document.querySelector(".initials");
+    initials = document.querySelector(".initials");
     // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
     currentLeaderboard = JSON.parse(localStorage.getItem("scoreArray")) || []; 
-    // Function to submit a score
-    function submitScore(){
-        var newScore = {
-            score: finalScore,
-            name: initials.value
-        }
-        // If statement in case the user doesn't input a name but submits a score, generates a random anonymous animal name
-        if (initials.value === ""){
-            var anonymousAnimals = ["Alligator", "Bear", "Chinchilla", "Duck", "Elephant", "Frog", "Giraffe", "Hippo", "Jackal", "Ibex", "Koala", "Llama", "Manatee", "Narwhal", "Otter", "Panda", "Quokka", "Squirrel", "Turtle", "Unicorn", "Walrus"]
-            newScore.name = "Anonymous " + anonymousAnimals[Math.floor(Math.random()*anonymousAnimals.length)];
-        }
-        currentLeaderboard.push(newScore); // Pushes the newScore object created, into the current leaderboard
-        // Function to compare objects in currentLeaderboard, so they can be fed through the .sort method for leaderboard organization
-        function compareHighScore(a, b){
-            var playerA = a.score;
-            var playerB = b.score;
-            var comparison = 0;
-            if (playerA > playerB){
-                comparison = 1;
-            } else if (playerA < playerB){
-                comparison = -1;
-            }
-            return comparison * -1;
-        }
-        currentLeaderboard.sort(compareHighScore); // Sorts the array so that only the top 4 scores show later
-        localStorage.setItem("scoreArray", JSON.stringify(currentLeaderboard)); // Turns the currentLeaderboard back into a JSON string
-        buildHighScores(); 
+}
+
+// Function to submit a score
+function submitScore(){
+    var newScore = {
+        score: finalScore,
+        name: initials.value
     }
+    // If statement in case the user doesn't input a name but submits a score, generates a random anonymous animal name
+    if (initials.value === ""){
+        var anonymousAnimals = ["Alligator", "Bear", "Chinchilla", "Duck", "Elephant", "Frog", "Giraffe", "Hippo", "Jackal", "Ibex", "Koala", "Llama", "Manatee", "Narwhal", "Otter", "Panda", "Quokka", "Squirrel", "Turtle", "Unicorn", "Walrus"]
+        newScore.name = "Anonymous " + anonymousAnimals[Math.floor(Math.random()*anonymousAnimals.length)];
+    }
+    currentLeaderboard.push(newScore); // Pushes the newScore object created, into the current leaderboard
+    currentLeaderboard.sort(compareHighScore); // Sorts the array so that only the top 4 scores show later
+    localStorage.setItem("scoreArray", JSON.stringify(currentLeaderboard)); // Turns the currentLeaderboard back into a JSON string
+    buildHighScores(); 
+}
+
+// Function to compare objects in currentLeaderboard, so they can be fed through the .sort method for leaderboard organization
+function compareHighScore(a, b){
+    var playerA = a.score;
+    var playerB = b.score;
+    var comparison = 0;
+    if (playerA > playerB){
+        comparison = 1;
+    } else if (playerA < playerB){
+        comparison = -1;
+    }
+    return comparison * -1;
 }
 
 // Function to build HTML for high scores section
@@ -247,38 +253,41 @@ function buildHighScores(){
     quizQuestionEl.innerHTML = "<h2>Current Leaderboard</h2>";
     // Set the currentLeaderboard variable to localStorage's values, and turns it from a JSON string to an array
     currentLeaderboard = JSON.parse(localStorage.getItem("scoreArray")) || [];
-    // Function for building leaderboard
-    function buildLeaderboard(){
-        if (currentLeaderboard.length < quizChoiceEl.length){
-            // For loop that populates the elements with the top 4 scores, if the currentLeaderboard is less than 4 records
-            for (var i = 0; i < currentLeaderboard.length; i++){
-                quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].name + " " + currentLeaderboard[i].score + "</p>";
-            }
-        } else if (currentLeaderboard.length >= quizChoiceEl.length){
-            // For loop that populates the elements with only the top 4 scores
-            for (var i = 0; i < quizChoiceEl.length; i++){
-                quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].name + " " + currentLeaderboard[i].score + "</p>";
-            }
-        }
-    }
     buildLeaderboard();
-    // Function for reinitializing the page
-    function pageReInit(){
-        // Remove extra buttons generated from the buildHighScores function
-        for (var i = 0; i <= startButtonEl.childElementCount; i++){
-            startButtonEl.firstElementChild.remove();
-        }
-        pageInit();
-    }
     // Create HTML button element for the main menu button
     buildButton("menu", "Main Menu!", pageReInit);
-    // Function for clearing the leaderboard
-    function clearScore(){
-        localStorage.clear();
-        buildHighScores();
-    }
     // Create HTML button element for the clear leaderboard button
     buildButton("clear", "Clear Leaderboard!", clearScore);
+}
+
+// Function for building leaderboard
+function buildLeaderboard(){
+    if (currentLeaderboard.length < quizChoiceEl.length){
+        // For loop that populates the elements with the top 4 scores, if the currentLeaderboard is less than 4 records
+        for (var i = 0; i < currentLeaderboard.length; i++){
+            quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].name + " " + currentLeaderboard[i].score + "</p>";
+        }
+    } else if (currentLeaderboard.length >= quizChoiceEl.length){
+        // For loop that populates the elements with only the top 4 scores
+        for (var i = 0; i < quizChoiceEl.length; i++){
+            quizChoiceEl[i].innerHTML = "<p>" + currentLeaderboard[i].name + " " + currentLeaderboard[i].score + "</p>";
+        }
+    }
+}
+
+// Function for reinitializing the page
+function pageReInit(){
+    // Remove extra buttons generated from the buildHighScores function
+    for (var i = 0; i <= startButtonEl.childElementCount; i++){
+        startButtonEl.firstElementChild.remove();
+    }
+    pageInit();
+}
+
+// Function for clearing the leaderboard
+function clearScore(){
+    localStorage.clear();
+    buildHighScores();
 }
 
 // Function for page initialization
