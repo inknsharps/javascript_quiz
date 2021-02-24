@@ -4,6 +4,8 @@
     --text-color-2: #ffffff;
     --header-color: #807a7a0c;
     --header-color-2: #807a7a4d;
+    --border-color: #0c610c54;
+    --dotted-border: 2px dashed var(--border-color);
 }
 
 body {
@@ -24,8 +26,16 @@ header {
     flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: flex-start;
-    border: 2px dashed rgb(175, 175, 175);
+    border: var(--dotted-border);
     background-color: var(--header-color);   
+}
+
+header:hover,
+.quiz-question:hover {
+    animation: breathingGlowShadow;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
 }
 
 .viewscore-section,
@@ -40,7 +50,10 @@ header {
 }
 
 .header-title {
-    padding-left: 7vh;
+    padding: 0 7vh;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--text-color-2);
 }
 
 .timer-section p {
@@ -58,7 +71,7 @@ main {
 }
 
 .quiz-question {
-    border: 2px dashed rgb(175, 175, 175);
+    border: var(--dotted-border);
     margin: 0 5vh 5vh;
     background-color: var(--header-color);
 }
@@ -79,10 +92,14 @@ main {
     flex-direction: column;
 }
 
+/* Adds empty content before so the answer validity message doesn't cause the page formatting to change around */
+.answer-validity:before {
+    content: "";
+    padding: 0 0.01vh;
+}
+
 .answer-validity {
-    position: absolute;
     align-content: center;
-    bottom: -15vh;
 }   
 
 button {
@@ -92,7 +109,7 @@ button {
 }
 
 button:hover {
-    animation: breathingGlow;
+    animation: breathingGlowButton;
     animation-duration: 1s;
     animation-direction: alternate;
     animation-iteration-count: infinite;
@@ -105,6 +122,11 @@ input {
     background-color: #21212100
 }
 
+footer:before {
+    content: "";
+    padding: 10vh;
+}
+
 footer section {
     display: flex;
     flex-direction: row;
@@ -112,6 +134,12 @@ footer section {
 
 footer section h3 {
     margin-right: 10vh;
+}
+
+@media screen and (min-height:650px) {
+    .answer-validity {
+        bottom: 10vh;
+    }
 }
 
 @media screen and (min-width:768px) {
@@ -131,18 +159,20 @@ footer section h3 {
         font-size: 20px;
     }
 
-    .answer-validity {
-        bottom: 23vh;
-    }
-
     footer {
         margin-top: 10vh;
     }
 }
 
-@keyframes breathingGlow {
+@keyframes breathingGlowButton {
     from {box-shadow: none;}
     to {box-shadow: 
-            inset 1px 1px 1px var(--text-color-1),
-            1px 1px 1px var(--text-color-1);};
+            inset 2px 2px 2px var(--text-color-1),
+            2px 2px 2px var(--text-color-1);};
+}
+
+@keyframes breathingGlowShadow {
+    from {box-shadow: none;}
+    to {box-shadow:
+            4px 4px 4px var(--text-color-1);};
 }
